@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 Shop Product Checker</title>
+    <style>
+        *{box-sizing:border-box; font-family: Arial, sans-serif; margin:0; padding:0;}
+        body{max-width:500px; margin:40px auto; padding:20px;}
+        .header{text-align:center; margin-bottom:30px;}
+        .header h1{font-size:22px; color:#111; display:flex; align-items:center; justify-content:center; gap:10px;}
+        .header span{font-size:26px;}
+        input, select{
+            width:100%; padding:14px; margin:8px 0;
+            border:1px solid #ddd; border-radius:8px;
+            font-size:16px; background:#fff;
+        }
+        button{
+            width:100%; padding:14px; margin:8px 0;
+            background:#2563eb; color:white; border:none;
+            border-radius:8px; font-size:17px; font-weight:bold;
+            cursor:pointer;
+        }
+        button:hover{background:#1d4ed8;}
+        .section{margin-top:25px; display:none;}
+        .section.show{display:block;}
+        .section h3{margin-bottom:12px; color:#333; font-size:17px;}
+        .product-card{
+            background:#fff; border:1px solid #eee; border-radius:8px;
+            padding:14px; margin-bottom:10px;
+        }
+        .product-name{font-weight:bold; font-size:15px; margin-bottom:6px; color:#111;}
+        .product-price{color:#dc2626; font-weight:bold; font-size:16px;}
+        .product-meta{font-size:13px; color:#666; margin-top:4px;}
+        .loading{text-align:center; padding:20px; color:#2563eb; display:none;}
+        .empty{text-align:center; padding:30px; color:#888; display:none;}
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <span>🌐</span>
+        <h1>Shop Product & Category Checker</h1>
+    </div>
+
+    <input type="text" id="shopUrl" placeholder="Ilagay ang Shop URL e.g. https://shopee.ph/yourshop">
+    
+    <select id="categorySelect">
+        <option value="">— Pumili ng Category —</option>
+        <option value="all">📦 Lahat ng Produkto</option>
+        <option value="electronics">📱 Electronics / Gadgets</option>
+        <option value="clothing">👕 Damit / Pananamit</option>
+        <option value="home">🏠 Home / Kagamitan</option>
+        <option value="beauty">💄 Beauty / Personal Care</option>
+        <option value="food">🍖 Pagkain / Grocery</option>
+        <option value="tools">🔧 Tools / Hardware</option>
+    </select>
+
+    <button onclick="loadProducts()">🔍 Ipakita ang Produkto</button>
+
+    <div class="loading" id="loading">⏳ Kinukuha ang mga produkto... sandali lang</div>
+    <div class="empty" id="empty">😕 Walang nakitang produkto sa category na ito</div>
+
+    <div class="section" id="results">
+        <h3 id="categoryTitle">📦 Lahat ng Produkto</h3>
+        <div id="productList"></div>
+    </div>
+
+<script>
+const productDatabase = [
+    { name: "Smartphone X Pro", category: "electronics", price: "₱12,999", stock: 45 },
+    { name: "Wireless Earbuds", category: "electronics", price: "₱1,499", stock: 120 },
+    { name: "Cotton T-Shirt", category: "clothing", price: "₱199", stock: 300 },
+    { name: "Denim Jeans", category: "clothing", price: "₱599", stock: 85 },
+    { name: "LED Desk Lamp", category: "home", price: "₱349", stock: 62 },
+    { name: "Storage Box Set", category: "home", price: "₱449", stock: 38 },
+    { name: "Vitamin C Serum", category: "beauty", price: "₱299", stock: 210 },
+    { name: "Moisturizing Cream", category: "beauty", price: "₱399", stock: 94 },
+    { name: "Instant Coffee Pack", category: "food", price: "₱99", stock: 500 },
+    { name: "Canned Sardines", category: "food", price: "₱28", stock: 1200 },
+    { name: "Screwdriver Set", category: "tools", price: "₱249", stock: 76 },
+    { name: "Measuring Tape", category: "tools", price: "₱149", stock: 153 },
+];
+
+const categoryNames = {
+    all: "📦 Lahat ng Produkto",
+    electronics: "📱 Electronics / Gadgets",
+    clothing: "👕 Damit / Pananamit",
+    home: "🏠 Home / Kagamitan",
+    beauty: "💄 Beauty / Personal Care",
+    food: "🍖 Pagkain / Grocery",
+    tools: "🔧 Tools / Hardware"
+};
+
+function loadProducts() {
+    const urlInput = document.getElementById('shopUrl').value.trim();
+    const category = document.getElementById('categorySelect').value;
+    const results = document.getElementById('results');
+    const productList = document.getElementById('productList');
+    const loading = document.getElementById('loading');
+    const empty = document.getElementById('empty');
+    const categoryTitle = document.getElementById('categoryTitle');
+
+    if (!urlInput) { alert("⚠️ Pakilagay muna ang URL ng shop!"); return; }
+    if (!category) { alert("⚠️ Pumili muna ng category!"); return; }
+
+    results.classList.remove('show');
+    empty.style.display = 'none';
+    loading.style.display = 'block';
+
+    setTimeout(() => {
+        loading.style.display = 'none';
+        
+        let filtered = category === 'all' 
+            ? productDatabase 
+            : productDatabase.filter(p => p.category === category);
+
+        categoryTitle.textContent = categoryNames[category] + ` (${filtered.length} items)`;
+        productList.innerHTML = '';
+
+        if (filtered.length === 0) { empty.style.display = 'block'; return; }
+
+        filtered.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <div class="product-name">${product.name}</div>
+                <div class="product-price">${product.price}</div>
+                <div class="product-meta">📦 Stock: ${product.stock} pcs</div>
+            `;
+            productList.appendChild(card);
+        });
+
+        results.classList.add('show');
+    }, 1200);
+}
+</script>
+</body>
+</html>
