@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,26 +43,26 @@
         <h1>Shop Product & Category Checker</h1>
     </div>
 
-    <input type="text" id="shopUrl" placeholder="Ilagay ang Shop URL e.g. https://shopee.ph/yourshop">
+    <input type="text" id="shopUrl" placeholder="Enter Shop URL e.g. https://shopee.ph/yourshop">
     
     <select id="categorySelect">
-        <option value="">— Pumili ng Category —</option>
-        <option value="all">📦 Lahat ng Produkto</option>
+        <option value="">— Select Category —</option>
+        <option value="all">📦 All Products</option>
         <option value="electronics">📱 Electronics / Gadgets</option>
-        <option value="clothing">👕 Damit / Pananamit</option>
-        <option value="home">🏠 Home / Kagamitan</option>
+        <option value="clothing">👕 Clothing / Apparel</option>
+        <option value="home">🏠 Home / Household</option>
         <option value="beauty">💄 Beauty / Personal Care</option>
-        <option value="food">🍖 Pagkain / Grocery</option>
+        <option value="food">🍖 Food / Grocery</option>
         <option value="tools">🔧 Tools / Hardware</option>
     </select>
 
-    <button onclick="loadProducts()">🔍 Ipakita ang Produkto</button>
+    <button onclick="loadProducts()">🔍 Show Products</button>
 
-    <div class="loading" id="loading">⏳ Kinukuha ang mga produkto... sandali lang</div>
-    <div class="empty" id="empty">😕 Walang nakitang produkto sa category na ito</div>
+    <div class="loading" id="loading">⏳ Loading products... please wait</div>
+    <div class="empty" id="empty">😕 No products found in this category</div>
 
     <div class="section" id="results">
-        <h3 id="categoryTitle">📦 Lahat ng Produkto</h3>
+        <h3 id="categoryTitle">📦 All Products</h3>
         <div id="productList"></div>
     </div>
 
@@ -83,12 +83,12 @@ const productDatabase = [
 ];
 
 const categoryNames = {
-    all: "📦 Lahat ng Produkto",
+    all: "📦 All Products",
     electronics: "📱 Electronics / Gadgets",
-    clothing: "👕 Damit / Pananamit",
-    home: "🏠 Home / Kagamitan",
+    clothing: "👕 Clothing / Apparel",
+    home: "🏠 Home / Household",
     beauty: "💄 Beauty / Personal Care",
-    food: "🍖 Pagkain / Grocery",
+    food: "🍖 Food / Grocery",
     tools: "🔧 Tools / Hardware"
 };
 
@@ -101,8 +101,8 @@ function loadProducts() {
     const empty = document.getElementById('empty');
     const categoryTitle = document.getElementById('categoryTitle');
 
-    if (!urlInput) { alert("⚠️ Pakilagay muna ang URL ng shop!"); return; }
-    if (!category) { alert("⚠️ Pumili muna ng category!"); return; }
+    if (!urlInput) { alert("⚠️ Please enter your shop URL first!"); return; }
+    if (!category) { alert("⚠️ Please select a category!"); return; }
 
     results.classList.remove('show');
     empty.style.display = 'none';
